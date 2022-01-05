@@ -26,7 +26,7 @@ from __init__  import (TITLE, connect_database)
 
 from version       import __version__
 
-# from adms_widgets import GroupBoxWidget, LineEditWidget, ColockWidget
+from widgets import GroupBoxWidget, LineEditWidget, LabelWidget, TypeWidget
 
 COPYRIGHT_YEAR = 2022
 DEFAULT_WIDTH  = 400
@@ -34,12 +34,13 @@ DEFAULT_HEIGHT = 700
 
 logger = logging.getLogger(__name__)
 
+print(PYQT_VERSION_STR, QT_VERSION_STR)
 
 class MainWindow(QtWidgets.QDialog):
     def __init__(self, parent=None):
         super(MainWindow, self).__init__(parent)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
-        
+
         # set gui window size
         self.resize(DEFAULT_WIDTH, DEFAULT_HEIGHT)
 
@@ -57,67 +58,72 @@ class MainWindow(QtWidgets.QDialog):
         # self.value   = self.get_table_value(self.schema)
         # self.dataset = self.gen_dataSet_by_schema(self.schema, self.value)
 
-        # self.setupUi(dataset=self.dataset)
+        self.setupUi()
 
-    def setupUi(self, dataset):
+    def setupUi(self):
         # =====================================================================
         # Main layout
         # =====================================================================
         VBoxLayout1 = QtWidgets.QVBoxLayout(self) 
         
         # =====================================================================
-        # CaseName widget
+        # Filter Section 
         # =====================================================================
-        CaseName  = LineEditWidget(self)
-        CaseName.value = self.casename
-        HBoxLayout1 = QtWidgets.QHBoxLayout()
-        HBoxLayout1.addItem(QtWidgets.QSpacerItem(0,0,QtWidgets.QSizePolicy.Expanding,QtWidgets.QSizePolicy.Expanding))
-        HBoxLayout1.addWidget(CaseName)
-        HBoxLayout1.addItem(QtWidgets.QSpacerItem(0,0,QtWidgets.QSizePolicy.Expanding,QtWidgets.QSizePolicy.Expanding))
-        VBoxLayout1.addLayout(HBoxLayout1)
+        # GroupBox_Section = QtWidgets.QHBoxLayout()
+        GroupBox = GroupBoxWidget(self)
+
+        VVBoxLayout = QtWidgets.QVBoxLayout() 
+        Filter_Section = QtWidgets.QHBoxLayout()
+        FilterEditor   = LineEditWidget(self)
+        FilterLabel    = LabelWidget("Filter")
+        # Filter_Section.addStretch()
+        Filter_Section.addWidget(FilterLabel)
+        Filter_Section.addStretch()
+        Filter_Section.addWidget(FilterEditor)
+        Filter_Section.addStretch()
+
+        Types_Section = QtWidgets.QHBoxLayout()
+        OptionLabel   = LabelWidget("Type")
+        ByName_Option = TypeWidget("ByName")
+        ByNum_Option  = TypeWidget("ByNumber")
+        Types_Section.addWidget(OptionLabel)
+        Types_Section.addStretch()
+        Types_Section.addWidget(ByName_Option)
+        Types_Section.addStretch()
+        Types_Section.addWidget(ByNum_Option)
+        Types_Section.addStretch()
+        # GroupBox.addLayout(Filter_Section)
+        # GroupBox_Section.addStretch()
+        VVBoxLayout.addLayout(Filter_Section)
+        VVBoxLayout.addLayout(Types_Section)
+        GroupBox.setLayout(VVBoxLayout)
+        VBoxLayout1.addWidget(GroupBox)
+        # VBoxLayout1.addLayout(Filter_Section)
+        # VBoxLayout1.addStretch()
 
         # =====================================================================
-        # GroupBox widget
+        # TableView Widget
         # =====================================================================
-        HBoxLayout2 = QtWidgets.QHBoxLayout()
-        groupboxes  = []
-        for num in range(dataset['colcount']):
-            col = num + 1
-            GroupBox = GroupBoxWidget(self)
-            HBoxLayout2.addWidget(GroupBox)
-            groupboxes.append(GroupBox)
+        EquipmentList_Section = QtWidgets.QHBoxLayout()
+        EquipmentList = QtWidgets.QTableView(self)
+        EquipmentList_Section.addWidget(EquipmentList)
+        VBoxLayout1.addLayout(EquipmentList_Section)
 
-        VBoxLayout1.addLayout(HBoxLayout2)
-        # =====================================================================
-        # Attribute widget
-        # =====================================================================
-        for numcol, groups in dataset['dataset'].items():
-            groupBox = groupboxes[int(numcol)-1]
-            groupBox.title = groups['label']
-            for num in range(len(groups['attributes'])):
-                # print(num)
-                if str(num+1) in groups['attributes']:
-                    dataset = groups['attributes'][str(num+1)]
-                    widget  = groupBox.addRow(dataset['colname'], dataset['value'], dataset['unit'])
-                else:
-                    widget  = groupBox.addRow(None, None, None)
 
         # =====================================================================
-        # Countdown colock 
+        # Footer Section
         # =====================================================================
-        self.Clock = ColockWidget(self)
-        self.Clock.second = self.colock
-        self.Clock.start()
-        self.Clock.isTimeOut.connect(self.close)
+        Footer_Section = QtWidgets.QHBoxLayout()
+        ButtonBox = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Cancel, self)
+        ButtonBox.setFont(QtGui.QFont("Arial", 13, 70))
+        ButtonBox.button(QtWidgets.QDialogButtonBox.Cancel).setText("Exit")
+        ButtonBox.button(QtWidgets.QDialogButtonBox.Cancel).clicked.connect(self.close)
 
-        ButtonBox  = QtWidgets.QDialogButtonBox(QtWidgets.QDialogButtonBox.Ok, self)
-        ButtonBox.accepted.connect(self.close)
-
-        HBoxLayout = QtWidgets.QHBoxLayout()
-        HBoxLayout.addWidget(self.Clock)
-        HBoxLayout.addItem(QtWidgets.QSpacerItem(0,0,QtWidgets.QSizePolicy.Expanding,QtWidgets.QSizePolicy.Expanding))
-        HBoxLayout.addWidget(ButtonBox)
-        VBoxLayout1.addLayout(HBoxLayout)
+        # HBoxLayout.addWidget(self.Clock)
+        # HBoxLayout.addItem(QtWidgets.QSpacerItem(0,0,QtWidgets.QSizePolicy.Expanding,QtWidgets.QSizePolicy.Expanding))
+        Footer_Section.addStretch()
+        Footer_Section.addWidget(ButtonBox)
+        VBoxLayout1.addLayout(Footer_Section)
 
 
 

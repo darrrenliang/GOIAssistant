@@ -7,107 +7,24 @@
 @Date  : 2022-01-05
 """
 
-import os
-import logging
+from QtCompat import QtWidgets, QtGui, QtCore, Signal, Slot, Qt
 
-# from i18n          import _
-from QtCompat      import QtWidgets, QtGui, QtCore, Signal, Slot, Qt
-from acsQt         import actions
-from acstw.OracleInterface import OracleInterface
-
-logger  = logging.getLogger(__name__)
-USER    = os.getenv('ORACLE_USER', 'acs_qa')
-PSWD    = os.getenv('ORACLE_PW'  , 'acs_qa')
-TNS     = os.getenv('ORACLE_DBSTRING', 'emsa')
-PRISMdb = OracleInterface(USER, PSWD, TNS)
+class LabelWidget(QtWidgets.QLabel):
+    def __init__(self, name):
+        super(LabelWidget, self).__init__()
+        self.setText(name)
+        self.setAlignment(QtCore.Qt.AlignCenter)
+        self.setFont(QtGui.QFont("Arial", 11, 70))
 
 class GroupBoxWidget(QtWidgets.QGroupBox):
 
     def __init__(self, parent=None):
         super(GroupBoxWidget, self).__init__(parent)
-        self.setMinimumSize(QtCore.QSize(400, 450))
-        self.setMaximumSize(QtCore.QSize(400, 16777215))
 
-        self.layout = QtWidgets.QFormLayout(self)
-        self.layout.addItem(QtWidgets.QSpacerItem(0,10,QtWidgets.QSizePolicy.Fixed,QtWidgets.QSizePolicy.Fixed))
-
-        self.set_font()
-        self.set_stylesheet()
-
-        self._title = None
-        
-    @property
-    def title(self):
-        if self.text() == None: return
-        if len(str(self.text()))== 0: return
-        return str(self.text())
-
-    @title.setter
-    def title(self, text):
-        if len(text)== 0 : return
-        if text == None  : return
-        self.setTitle(str(text))
-
-    def addRow(self, key=None, value=None, unit=None):        
-        layout = QtWidgets.QHBoxLayout()       
-        label1 = self.gen_name_label(key)
-        widget = self.gen_value_line(value)
-      
-        if label1 != None:
-            layout.addWidget(label1)
-            layout.addItem(QtWidgets.QSpacerItem(30,0,QtWidgets.QSizePolicy.Fixed,QtWidgets.QSizePolicy.Fixed))
-        
-        if widget != None:
-            layout.addWidget(widget)
-        
-        label2 = self.gen_unit_label(unit)
-        layout.addWidget(label2)
-
-        self.layout.addRow(layout)
-
-    def gen_name_label(self, text=None):
-        if text == None:
-            return text
-        else:
-            editor = QtWidgets.QLabel(self)
-            editor.setText(str(text))
-            editor.setAlignment(QtCore.Qt.AlignCenter)
-            return editor
-        
-    def gen_value_line(self, text=None):
-        if text == None:
-            return text
-        else:
-            editor = QtWidgets.QLineEdit(self)
-            editor.setReadOnly(True)
-            editor.setText(str(text))
-            editor.setAlignment(QtCore.Qt.AlignCenter)
-            editor.setMinimumSize(QtCore.QSize(180, 25))
-            editor.setMaximumSize(QtCore.QSize(180, 16777215))
-            return editor
-
-    def gen_unit_label(self, text=None):
-        label = QtWidgets.QLabel(self)
-        label.setMinimumSize(QtCore.QSize(35, 25))
-        label.setMaximumSize(QtCore.QSize(35, 16777215))
-        label.setAlignment(QtCore.Qt.AlignCenter)
-
-        font = QtGui.QFont()
-        font.setPointSize(9)
-        label.setFont(font)
-
-        if text != None:
-            label.setText(str(text))
-
-        return label
-
-    def set_font(self):
-        font = QtGui.QFont()
-        font.setPointSize(13)
-        font.setBold(True)
-        self.setFont(font)
-
-    def set_stylesheet(self):
+        self.setTitle("Options")
+        self.setFont(QtGui.QFont("Arial", 12, 60))
+        self.setMinimumSize(QtCore.QSize(380, 110))
+        self.setMaximumSize(QtCore.QSize(380, 16777215))
         css = """
             QGroupBox {    
                 border: 1px solid gray;    
@@ -121,18 +38,27 @@ class GroupBoxWidget(QtWidgets.QGroupBox):
             }
         """
         self.setStyleSheet(css)
-    
+
+class TypeWidget(QtWidgets.QRadioButton):
+    def __init__(self, name):
+        super(TypeWidget, self).__init__()
+        self.setObjectName(name)
+        self.setMinimumSize(QtCore.QSize(50, 20))
+        self.setMaximumSize(QtCore.QSize(120, 16777215))
+        self.setText(name)
+        self.setFont(QtGui.QFont("Arial", 11, 75))
 
 class LineEditWidget(QtWidgets.QLineEdit):
     def __init__(self, parent=None):
         super(LineEditWidget, self).__init__(parent)
-        self.setMinimumSize(QtCore.QSize(200, 25))
-        self.setMaximumSize(QtCore.QSize(200, 16777215))
-        self.setReadOnly(True)
+        self.setMinimumSize(QtCore.QSize(300, 25))
+        self.setMaximumSize(QtCore.QSize(300, 16777215))
         self.setAlignment(QtCore.Qt.AlignCenter)
+        self.setFont(QtGui.QFont("Arial", 12, 70))
+
+        self.setLayoutDirection(QtCore.Qt.RightToLeft)
 
         self._value = None
-        self.set_font()
 
     @property
     def value(self):
@@ -147,23 +73,17 @@ class LineEditWidget(QtWidgets.QLineEdit):
         if text == None  : return
         self.setText(str(text))
 
-    def set_font(self):
-        font = QtGui.QFont()
-        font.setPointSize(12)
-        font.setBold(True)
-        self.setFont(font)
-
     def set_rule(self):
         regexRule = QtCore.QRegExp("[0-9A-Za-z\-\,]+")
         validator = QtGui.QRegExpValidator(regexRule)
         self.setValidator(validator)
 
 
-class ColockWidget(QtWidgets.QLabel):
+class LogoWidget(QtWidgets.QLabel):
     isTimeOut = QtCore.pyqtSignal() 
 
     def __init__(self, parent=None):
-        super(ColockWidget, self).__init__(parent)
+        super(LogoWidget, self).__init__(parent)
         self.setMinimumSize(QtCore.QSize(50, 25))
         self.setMaximumSize(QtCore.QSize(50, 16777215))
         self.setAlignment(QtCore.Qt.AlignCenter)
