@@ -20,21 +20,20 @@ from QtCompat.QtCore      import (PYQT_VERSION_STR, QT_VERSION_STR, QSettings)
 # from acsQt import labels 
 # from acsQt import actions
 # from acsQt.login           import LoginForm
-from core.MyWidgets.application     import create_q_application
+from core.MyWidgets.application import create_q_application
 from __init__  import (TITLE, connect_database)
 
+from version import __version__
 
-from version       import __version__
-
-from widgets import GroupBoxWidget, LineEditWidget, LabelWidget, TypeWidget
+from core.MyWidgets.widgets     import GroupBoxWidget, LineEditWidget, LabelWidget, TypeWidget
+from core.MyWidgets.TableModel  import DeviceTableModel
+from core.MyWidgets.TableView   import DeviceTableView
 
 COPYRIGHT_YEAR = 2022
 DEFAULT_WIDTH  = 400
 DEFAULT_HEIGHT = 700
 
 logger = logging.getLogger(__name__)
-
-print(PYQT_VERSION_STR, QT_VERSION_STR)
 
 class MainWindow(QtWidgets.QDialog):
     def __init__(self, parent=None):
@@ -59,6 +58,7 @@ class MainWindow(QtWidgets.QDialog):
         # self.dataset = self.gen_dataSet_by_schema(self.schema, self.value)
 
         self.setupUi()
+        
 
     def setupUi(self):
         # =====================================================================
@@ -69,14 +69,13 @@ class MainWindow(QtWidgets.QDialog):
         # =====================================================================
         # Filter Section 
         # =====================================================================
-        # GroupBox_Section = QtWidgets.QHBoxLayout()
         GroupBox = GroupBoxWidget(self)
 
         VVBoxLayout = QtWidgets.QVBoxLayout() 
         Filter_Section = QtWidgets.QHBoxLayout()
         FilterEditor   = LineEditWidget(self)
         FilterLabel    = LabelWidget("Filter")
-        # Filter_Section.addStretch()
+
         Filter_Section.addWidget(FilterLabel)
         Filter_Section.addStretch()
         Filter_Section.addWidget(FilterEditor)
@@ -84,31 +83,32 @@ class MainWindow(QtWidgets.QDialog):
 
         Types_Section = QtWidgets.QHBoxLayout()
         OptionLabel   = LabelWidget("Type")
-        ByName_Option = TypeWidget("ByName")
         ByNum_Option  = TypeWidget("ByNumber")
+        ByNum_Option.setChecked(True)
+        ByName_Option = TypeWidget("ByName")
+
         Types_Section.addWidget(OptionLabel)
-        Types_Section.addStretch()
-        Types_Section.addWidget(ByName_Option)
         Types_Section.addStretch()
         Types_Section.addWidget(ByNum_Option)
         Types_Section.addStretch()
-        # GroupBox.addLayout(Filter_Section)
-        # GroupBox_Section.addStretch()
+        Types_Section.addWidget(ByName_Option)
+        Types_Section.addStretch()
+
         VVBoxLayout.addLayout(Filter_Section)
         VVBoxLayout.addLayout(Types_Section)
         GroupBox.setLayout(VVBoxLayout)
         VBoxLayout1.addWidget(GroupBox)
-        # VBoxLayout1.addLayout(Filter_Section)
-        # VBoxLayout1.addStretch()
 
         # =====================================================================
         # TableView Widget
         # =====================================================================
-        EquipmentList_Section = QtWidgets.QHBoxLayout()
-        EquipmentList = QtWidgets.QTableView(self)
-        EquipmentList_Section.addWidget(EquipmentList)
-        VBoxLayout1.addLayout(EquipmentList_Section)
+        DeviceList_Section = QtWidgets.QHBoxLayout()
+        DeviceView  = DeviceTableView(self)
+        DeviceModel = DeviceTableModel(self)
+        DeviceView.setModel(DeviceModel)
 
+        DeviceList_Section.addWidget(DeviceView)
+        VBoxLayout1.addLayout(DeviceList_Section)
 
         # =====================================================================
         # Footer Section
@@ -119,12 +119,9 @@ class MainWindow(QtWidgets.QDialog):
         ButtonBox.button(QtWidgets.QDialogButtonBox.Cancel).setText("Exit")
         ButtonBox.button(QtWidgets.QDialogButtonBox.Cancel).clicked.connect(self.close)
 
-        # HBoxLayout.addWidget(self.Clock)
-        # HBoxLayout.addItem(QtWidgets.QSpacerItem(0,0,QtWidgets.QSizePolicy.Expanding,QtWidgets.QSizePolicy.Expanding))
         Footer_Section.addStretch()
         Footer_Section.addWidget(ButtonBox)
         VBoxLayout1.addLayout(Footer_Section)
-
 
 
 def main():

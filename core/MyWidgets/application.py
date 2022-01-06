@@ -13,6 +13,21 @@ __author__ = 'Sam Hartsfield'
 
 logger = logging.getLogger(__name__)
 
+path = r"{path}"
+
+
+def Base64ToBytes(filename):
+    image = QtGui.QImage(filename)
+    ba64  = QtCore.QByteArray()
+    buff  = QtCore.QBuffer(ba64)
+    image.save(buff, "PNG")
+    return ba64.toBase64().data()
+
+def iconFromBase64(base64):
+    pixmap = QtGui.QPixmap()
+    pixmap.loadFromData(QtCore.QByteArray.fromBase64(base64))
+    icon = QtGui.QIcon(pixmap)
+    return icon
 
 def create_q_application(title, icon=None, gui=True):
     if gui:
@@ -25,11 +40,9 @@ def create_q_application(title, icon=None, gui=True):
             app = QtWidgets.QApplication.instance()
         if icon is None:
             # Use default icon
-            filename = 'acs_icon.png'
-            # Load file using setuptools pkg_resources
-            png_bytes = QtCore.QByteArray(resource_string('acsQt.icon', filename))
-            buf = QtCore.QBuffer(png_bytes)
-            q_icon = read_icon(buf)
+            base64 = Base64ToBytes(path)
+            icon   = iconFromBase64(base64)
+            q_icon = read_icon(icon)
         else:
             q_icon = read_icon(icon)
         app.setWindowIcon(q_icon)

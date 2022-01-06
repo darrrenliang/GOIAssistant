@@ -241,6 +241,6 @@ if __name__ == "__main__":
     print ("*** Execute OracleInterface.py ***")
 
     # """Self testing"""
-    PRISMdb=OracleInterface('acs_das', 'acs_das', 'ems')
+    PRISMdb=OracleInterface('', '', '')
     PRISMdb.ConnectTest()
     

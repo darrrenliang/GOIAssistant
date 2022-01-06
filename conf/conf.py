@@ -64,17 +64,21 @@ class AppConfig:
 if __name__ == '__main__':
     conf = Conf(PATH)
     content = conf.read_confing()
+    
     # return config content
     print(content)
+
     # return all seciton in config.ini
     print(content.sections())
+
     # return section data
     print(content.options("delay"))
+
     # return all option in section
     print(content.items("delay"))
+
     # return string value
     print(content.get("Column", "idxes"))
+
     # return integer value
     print(content.get("Substation", "3C"))
-    # conf.set_attr("delay", "check", "10")
-    # print(content.getint("delay", "check"))
