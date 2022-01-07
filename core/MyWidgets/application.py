@@ -13,7 +13,7 @@ __author__ = 'Sam Hartsfield'
 
 logger = logging.getLogger(__name__)
 
-path = r"{path}"
+path = r"/home/acs/DRL_Project/GOIAssistant/assets/acs_icon.png"
 
 
 def Base64ToBytes(filename):
@@ -43,6 +43,9 @@ def create_q_application(title, icon=None, gui=True):
             base64 = Base64ToBytes(path)
             icon   = iconFromBase64(base64)
             q_icon = read_icon(icon)
+            # png_bytes = QtCore.QByteArray(resource_string('acsQt.icon', filename))
+            # buf = QtCore.QBuffer(png_bytes)
+            # q_icon = read_icon(buf)
         else:
             q_icon = read_icon(icon)
         app.setWindowIcon(q_icon)

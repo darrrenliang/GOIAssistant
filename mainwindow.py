@@ -21,7 +21,7 @@ from QtCompat.QtCore      import (PYQT_VERSION_STR, QT_VERSION_STR, QSettings)
 # from acsQt import actions
 # from acsQt.login           import LoginForm
 from core.MyWidgets.application import create_q_application
-from __init__  import (TITLE, connect_database)
+from __init__  import (TITLE, PRISM, connect_database)
 
 from version import __version__
 
@@ -36,28 +36,19 @@ DEFAULT_HEIGHT = 700
 logger = logging.getLogger(__name__)
 
 class MainWindow(QtWidgets.QDialog):
-    def __init__(self, parent=None):
+    def __init__(self, device, parent=None):
         super(MainWindow, self).__init__(parent)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
 
         # set gui window size
         self.resize(DEFAULT_WIDTH, DEFAULT_HEIGHT)
 
-        # # =====================================================================
-        # # argument area 
-        # # =====================================================================
-        # self._colock    = 60
-        # self._casename  = 'SCA_OUT'
-        # self._parameter = 'DTS DYNAMIC FAULT'
+        self.device = device
 
-        # # =====================================================================
-        # # data processing 
-        # # =====================================================================
-        # self.schema  = self.get_schema_by_case(casename=self.casename)
-        # self.value   = self.get_table_value(self.schema)
-        # self.dataset = self.gen_dataSet_by_schema(self.schema, self.value)
-
+        # setup ui
         self.setupUi()
+
+        self.re_init_table()
         
 
     def setupUi(self):
@@ -72,30 +63,34 @@ class MainWindow(QtWidgets.QDialog):
         GroupBox = GroupBoxWidget(self)
 
         VVBoxLayout = QtWidgets.QVBoxLayout() 
-        Filter_Section = QtWidgets.QHBoxLayout()
-        FilterEditor   = LineEditWidget(self)
-        FilterLabel    = LabelWidget("Filter")
+        filter_section = QtWidgets.QHBoxLayout()
+        filterLabel    = LabelWidget("Filter")
+        self.filterEditor = LineEditWidget(self)
 
-        Filter_Section.addWidget(FilterLabel)
-        Filter_Section.addStretch()
-        Filter_Section.addWidget(FilterEditor)
-        Filter_Section.addStretch()
+        self.filterEditor.textEdited.connect(self.re_init_table)
+        filter_section.addWidget(filterLabel)
+        filter_section.addStretch()
+        filter_section.addWidget(self.filterEditor)
+        filter_section.addStretch()
 
-        Types_Section = QtWidgets.QHBoxLayout()
-        OptionLabel   = LabelWidget("Type")
-        ByNum_Option  = TypeWidget("ByNumber")
-        ByNum_Option.setChecked(True)
-        ByName_Option = TypeWidget("ByName")
+        types_section = QtWidgets.QHBoxLayout()
+        optionLabel   = LabelWidget("Type")
+        self.byNumber = TypeWidget("ByNumber")
+        self.byName   = TypeWidget("ByName")
+        
+        self.byNumber.setChecked(True)
+        self.byNumber.toggled.connect(lambda x : self.filterEditor.setText(""))
+        self.byName.toggled.connect(lambda x : self.filterEditor.setText(""))
 
-        Types_Section.addWidget(OptionLabel)
-        Types_Section.addStretch()
-        Types_Section.addWidget(ByNum_Option)
-        Types_Section.addStretch()
-        Types_Section.addWidget(ByName_Option)
-        Types_Section.addStretch()
+        types_section.addWidget(optionLabel)
+        types_section.addStretch()
+        types_section.addWidget(self.byNumber)
+        types_section.addStretch()
+        types_section.addWidget(self.byName)
+        types_section.addStretch()
 
-        VVBoxLayout.addLayout(Filter_Section)
-        VVBoxLayout.addLayout(Types_Section)
+        VVBoxLayout.addLayout(filter_section)
+        VVBoxLayout.addLayout(types_section)
         GroupBox.setLayout(VVBoxLayout)
         VBoxLayout1.addWidget(GroupBox)
 
@@ -103,11 +98,12 @@ class MainWindow(QtWidgets.QDialog):
         # TableView Widget
         # =====================================================================
         DeviceList_Section = QtWidgets.QHBoxLayout()
-        DeviceView  = DeviceTableView(self)
-        DeviceModel = DeviceTableModel(self)
-        DeviceView.setModel(DeviceModel)
+        self.deviceView  = DeviceTableView(self)
+        self.deviceModel = DeviceTableModel(self)
+        self.deviceView.setModel(self.deviceModel)
+        self.deviceView.doubleClicked.connect(self.exec_operschem)
 
-        DeviceList_Section.addWidget(DeviceView)
+        DeviceList_Section.addWidget(self.deviceView)
         VBoxLayout1.addLayout(DeviceList_Section)
 
         # =====================================================================
@@ -123,16 +119,32 @@ class MainWindow(QtWidgets.QDialog):
         Footer_Section.addWidget(ButtonBox)
         VBoxLayout1.addLayout(Footer_Section)
 
+    def exec_operschem(self, item):
+        number  = self.deviceModel._datas[item.row()][0]
+        command = f"oiint {self.device} -c display -fwin {number}"
+        PRISM.ExeNonCommand(command)
 
-def main():
+
+    def re_init_table(self):
+        params = {
+            "byname"  : self.byName.state,
+            "bynumber": self.byNumber.state,
+            "filter"  : str(self.filterEditor.text())
+        }
+        self.deviceModel.re_init(params)
+        
+
+def main(device):
     logger_setup()
 
     app = create_q_application(TITLE)
-    goi_assistant = MainWindow()
+    goi_assistant = MainWindow(device)
     goi_assistant.show()
     app.exec_()
 
 if __name__ == '__main__':
     import sys
-    sys.exit(main())
+
+    device = 1
+    sys.exit(main(device))
 

@@ -30,14 +30,15 @@ class DeviceTableModel(RefreshMixin, QtCore.QAbstractTableModel):
         self._datas  = []
         self.HEADERS = HEADERS
 
-        self.re_init()
-
     @property
     def datas(self):
         return self._datas
 
-    def re_init(self):
+    def re_init(self, params):
         with self._pause_refresh():
+            self.byname    = params.get("byname")
+            self.bynumber  = params.get("bynumber")
+            self.filter    = params.get("filter")
             self._datas    = self.get_data()        
             self.endResetModel()
     
@@ -91,12 +92,12 @@ class DeviceTableModel(RefreshMixin, QtCore.QAbstractTableModel):
         return int(section + 1)
     
     def flags(self, index):
-        return QtCore.Qt.ItemIsEnabled
+        return QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable
 
     def get_data(self):
-
         query = f"""
-            select command_string, substation, textcontents from gis_command
+            SELECT COMMAND_STRING, SUBSTATION, TEXTCONTENTS FROM GIS_COMMAND
+            WHERE TEXTCONTENTS IS NOT NULL
         """
         data = list(map(list, Mapdb.ExecQuery(query)))
         return sorted(data, key=lambda tup: tup[0], reverse=False)
