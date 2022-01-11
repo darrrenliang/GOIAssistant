@@ -7,7 +7,7 @@
 @Date  : 2022-01-05
 """
 
-from QtCompat import QtWidgets, QtGui, QtCore, Signal, Slot, Qt
+from goiassistant.core.QtCompat import QtWidgets, QtGui, QtCore, Signal, Slot, Qt
 
 class LabelWidget(QtWidgets.QLabel):
     def __init__(self, name):
@@ -64,54 +64,56 @@ class LineEditWidget(QtWidgets.QLineEdit):
 
     @property
     def value(self):
-        if self.text() == None: return
-        if len(str(self.text()))== 0: return
+        if self.text() == None: 
+            return
+
+        if len(str(self.text()))== 0: 
+            return
 
         return str(self.text())
 
     @value.setter
     def value(self, text):
-        if len(text)== 0 : return
-        if text == None  : return
+        if len(text)== 0 : 
+            return
+
+        if text == None  :
+             return
+             
         self.setText(str(text))
 
-    def set_rule(self):
-        regexRule = QtCore.QRegExp("[0-9A-Za-z\-\,]+")
-        validator = QtGui.QRegExpValidator(regexRule)
-        self.setValidator(validator)
+    # def keyPressEvent(self, event):
+        # if event.key() == QtCore.Qt.Key_Backspace:
+        #     self.del_()
 
-    def keyPressEvent(self, event):
-        if event.key() == QtCore.Qt.Key_Backspace:
-            self.del_()
+        # elif event.key() == QtCore.Qt.Key_Delete:
+        #     self.backspace()
 
-        elif event.key() == QtCore.Qt.Key_Delete:
-            self.backspace()
+        # elif event.key() == QtCore.Qt.Key_Space:
+        #     super(LineEditWidget, self).keyPressEvent(event) 
+        #     self.setCursorPosition(0)
 
-        elif event.key() == QtCore.Qt.Key_Space:
-            super(LineEditWidget, self).keyPressEvent(event) 
-            self.setCursorPosition(0)
+        # elif (  '\u0600' <= event.text() <= '\u06FF' or
+        #         '\u0750' <= event.text() <= '\u077F' or
+        #         '\u08A0' <= event.text() <= '\u08FF' or
+        #         '\uFB50' <= event.text() <= '\uFDFF' or
+        #         '\uFE70' <= event.text() <= '\uFEFF' or
+        #         '\U00010E60' <= event.text() <= '\U00010E7F' or
+        #         '\U0001EE00' <= event.text() <= '\U0001EEFF'
+        #     ):
+        #     super(LineEditWidget, self).keyPressEvent(event) 
+        #     self.setCursorPosition(0)
 
-        elif (  '\u0600' <= event.text() <= '\u06FF' or
-                '\u0750' <= event.text() <= '\u077F' or
-                '\u08A0' <= event.text() <= '\u08FF' or
-                '\uFB50' <= event.text() <= '\uFDFF' or
-                '\uFE70' <= event.text() <= '\uFEFF' or
-                '\U00010E60' <= event.text() <= '\U00010E7F' or
-                '\U0001EE00' <= event.text() <= '\U0001EEFF'
-            ):
-            super(LineEditWidget, self).keyPressEvent(event) 
-            self.setCursorPosition(0)
+        # elif event.text().isalpha():
+        #     super(LineEditWidget, self).keyPressEvent(event) 
+        #     self.setCursorPosition(0)
 
-        elif event.text().isalpha():
-            super(LineEditWidget, self).keyPressEvent(event) 
-            self.setCursorPosition(0)
+        # if event.text().isnumeric():
+        #     super(LineEditWidget, self).keyPressEvent(event) 
+            # self.setCursorPosition(0)
 
-        elif event.text().isnumeric():
-            super(LineEditWidget, self).keyPressEvent(event) 
-            self.setCursorPosition(0)
-
-        else:
-            super(LineEditWidget, self).keyPressEvent(event) 
+        # else:
+        #     super(LineEditWidget, self).keyPressEvent(event) 
           
 class LogoWidget(QtWidgets.QLabel):
     isTimeOut = QtCore.pyqtSignal() 

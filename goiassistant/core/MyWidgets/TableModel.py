@@ -9,9 +9,9 @@ import os
 import operator
 import datetime
 import logging
-from core.MyWidgets.refresh_mixin import RefreshMixin
-from QtCompat            import QtWidgets, QtGui, QtCore, Qt
-from __init__            import connect_database
+from goiassistant.__init__       import connect_database
+from goiassistant.core.QtCompat  import QtWidgets, QtGui, QtCore, Qt
+from goiassistant.core.MyWidgets.refresh_mixin import RefreshMixin
 
 logger  = logging.getLogger(__name__)
 
@@ -20,15 +20,15 @@ Mapdb   = connect_database()
 HEADERS = ("NUMBER", "SUBSTATION", "NAME")
 
 
-# TODO: merge with common station view/model in acsprism package?
 class DeviceTableModel(RefreshMixin, QtCore.QAbstractTableModel):
     # parent is required for models, otherwise you get spurious Qt warnings
     def __init__(self, parent):
         super(DeviceTableModel, self).__init__()
 
         # get data from sql
-        self._datas  = []
-        self.HEADERS = HEADERS
+        self.sql_data = self.get_data()
+        self._datas   = []
+        self.HEADERS  = HEADERS
 
     @property
     def datas(self):
@@ -38,14 +38,14 @@ class DeviceTableModel(RefreshMixin, QtCore.QAbstractTableModel):
         with self._pause_refresh():
             self.byname    = params.get("byname")
             self.bynumber  = params.get("bynumber")
-            self.filter    = params.get("filter")
-            self._datas    = self.get_data()        
+            self.content   = params.get("content")
+            self._datas    = self._filter()        
             self.endResetModel()
     
     def _on_refresh(self):
-        self._datas = self.get_data()
+        self._datas = self._filter()
         self.invalidate()
-        logger.debug("Refreshing dasapp table")
+        logger.debug("Refreshing device table")
 
     def invalidate(self):
         # logger.debug("Refreshing")
@@ -101,3 +101,17 @@ class DeviceTableModel(RefreshMixin, QtCore.QAbstractTableModel):
         """
         data = list(map(list, Mapdb.ExecQuery(query)))
         return sorted(data, key=lambda tup: tup[0], reverse=False)
+
+    def _filter(self):
+        _data = self.sql_data
+        _col_name   = HEADERS.index("NAME")
+        _col_number = HEADERS.index("NUMBER")
+
+        if self.byname:
+            return list(filter(lambda x: self.content in x[_col_name], _data))
+
+        elif self.bynumber:
+            return list(filter(lambda x: self.content in x[_col_number], _data))
+            
+        else:
+            return []

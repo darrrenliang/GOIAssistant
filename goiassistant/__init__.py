@@ -11,30 +11,28 @@ import os
 import logging
 import logging.handlers
 
-from core.OracleInterface   import OracleInterface
-# from core.conf              import AppConfig
-
+from goiassistant.core.OracleInterface   import OracleInterface
+from goiassistant.core.LinuxInterface    import LinuxInterface
 
 # GUI TITLE
 TITLE = "GOI Assistant"
 
+# PRISM INFO
+PRISM   = LinuxInterface()
+
 # DB INFO
 def connect_database():
-    USER  = ""
-    PSWD  = ""
-    TNS   = ""
+    USER  = os.getenv('ORACLE_USER_BASEDB', 'acs_map_jepco72')
+    PSWD  = os.getenv('ORACLE_PW_BASEDB'  , 'acs')
+    TNS   = os.getenv('ORACLE_DBSTRING_BASEDB', 'dasmap')
     Mapdb = OracleInterface(USER, PSWD, TNS)
     Mapdb.ConnectTest()
     return Mapdb
 
-# CONFIG
-# CONF_PATH = ""
-# APP_CONF  = AppConfig(CONF_PATH)
-
 # LOG INFO
 LOG_FILENAME = 'GOI_Assistant.log'
 LOG_FORMAT   = '%(asctime)s [%(process)d] %(levelname)s %(name)s: %(message)s'
-LOG_FOLDER   = ''
+LOG_FOLDER   = '/home/acs/tmp'
 
 
 if __name__ == "__main__":

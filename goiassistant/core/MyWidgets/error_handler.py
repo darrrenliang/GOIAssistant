@@ -12,7 +12,7 @@ import traceback
 import sys
 from acs._compat import PY2
 from acs.i18n_common import ugettext as _
-from qtcompat.QtWidgets import QApplication, QMessageBox
+from goiassistant.core.QtCompat.QtWidgets import QApplication, QMessageBox
 
 __author__ = 'Sam Hartsfield'
 

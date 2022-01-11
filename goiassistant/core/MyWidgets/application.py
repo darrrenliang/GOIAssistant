@@ -4,8 +4,8 @@
 """
 import logging
 import os
-from QtCompat import QtWidgets, QtGui, QtCore
-from QtCompat.QtWidgets import QAction
+from goiassistant.core.QtCompat import QtWidgets, QtGui, QtCore
+from goiassistant.core.QtCompat.QtWidgets import QAction
 from pkg_resources import resource_string
 import sys
 
@@ -40,12 +40,10 @@ def create_q_application(title, icon=None, gui=True):
             app = QtWidgets.QApplication.instance()
         if icon is None:
             # Use default icon
-            base64 = Base64ToBytes(path)
-            icon   = iconFromBase64(base64)
-            q_icon = read_icon(icon)
-            # png_bytes = QtCore.QByteArray(resource_string('acsQt.icon', filename))
-            # buf = QtCore.QBuffer(png_bytes)
-            # q_icon = read_icon(buf)
+            filename = "acs_icon.png"
+            png_bytes = QtCore.QByteArray(resource_string('goiassistant.assets', filename))
+            buf = QtCore.QBuffer(png_bytes)
+            q_icon = read_icon(buf)
         else:
             q_icon = read_icon(icon)
         app.setWindowIcon(q_icon)

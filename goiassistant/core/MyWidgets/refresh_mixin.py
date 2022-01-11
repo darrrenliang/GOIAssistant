@@ -3,7 +3,7 @@
 :Copyright: © 2014 Advanced Control Systems, Inc. All Rights Reserved.
 """
 from contextlib import contextmanager
-from QtCompat   import QtCore
+from goiassistant.core.QtCompat   import QtCore
 
 __author__ = 'Sam Hartsfield'
 

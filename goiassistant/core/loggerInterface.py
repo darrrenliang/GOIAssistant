@@ -10,7 +10,7 @@
 import os
 import logging
 import logging.handlers
-from __init__  import (LOG_FILENAME, LOG_FORMAT, LOG_FOLDER)
+from goiassistant.__init__  import (LOG_FILENAME, LOG_FORMAT, LOG_FOLDER)
 
 
 def logger_setup():

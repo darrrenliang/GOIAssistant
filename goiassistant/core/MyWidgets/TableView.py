@@ -9,8 +9,8 @@ __date__   = '2021-11-24'
 import os
 import logging
 import datetime
-from QtCompat                   import QtWidgets, QtGui, QtCore, Qt
-from core.MyWidgets.TableModel  import HEADERS
+from goiassistant.core.MyWidgets.TableModel  import HEADERS
+from goiassistant.core.QtCompat              import QtWidgets, QtGui, QtCore, Qt
 
 logger = logging.getLogger(__name__)
 
