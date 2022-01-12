@@ -1,0 +1,8 @@
+.vscode
+*.pyc
+*.log
+build
+dist
+lib
+include
+lib64
