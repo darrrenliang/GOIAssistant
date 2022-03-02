@@ -17,7 +17,7 @@ logger  = logging.getLogger(__name__)
 
 Mapdb   = connect_database()
 
-HEADERS = ("NUMBER", "SUBSTATION", "NAME")
+HEADERS = ("NUMBER", "SUBSTATION", "NAME", "EQUIP_NUM")
 
 
 class DeviceTableModel(RefreshMixin, QtCore.QAbstractTableModel):
@@ -38,6 +38,7 @@ class DeviceTableModel(RefreshMixin, QtCore.QAbstractTableModel):
         with self._pause_refresh():
             self.byname    = params.get("byname")
             self.bynumber  = params.get("bynumber")
+            self.byequip   = params.get("byequip")
             self.content   = params.get("content")
             self._datas    = self._filter()        
             self.endResetModel()
@@ -96,8 +97,9 @@ class DeviceTableModel(RefreshMixin, QtCore.QAbstractTableModel):
 
     def get_data(self):
         query = f"""
-            SELECT COMMAND_STRING, SUBSTATION, TEXTCONTENTS FROM GIS_COMMAND
-            WHERE TEXTCONTENTS IS NOT NULL
+            SELECT COMMAND_STRING, SUBSTATION, TEXTCONTENTS, TEXTSTYLE 
+            FROM   GIS_COMMAND
+            WHERE  TEXTCONTENTS IS NOT NULL
         """
         data = list(map(list, Mapdb.ExecQuery(query)))
         return sorted(data, key=lambda tup: tup[0], reverse=False)
@@ -106,12 +108,16 @@ class DeviceTableModel(RefreshMixin, QtCore.QAbstractTableModel):
         _data = self.sql_data
         _col_name   = HEADERS.index("NAME")
         _col_number = HEADERS.index("NUMBER")
+        _col_equip  = HEADERS.index("EQUIP_NUM")
 
         if self.byname:
             return list(filter(lambda x: self.content in x[_col_name], _data))
 
         elif self.bynumber:
             return list(filter(lambda x: self.content in x[_col_number], _data))
+        
+        elif self.byequip:
+            return list(filter(lambda x: self.content in x[_col_equip], _data))
             
         else:
             return []

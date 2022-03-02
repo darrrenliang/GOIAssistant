@@ -1,5 +1,5 @@
-/home/acs/DB/Convert/ATO_SCRIPTS/GOIassistant/package/PyQt5_sip-12.8.1-cp36-cp36m-manylinux1_x86_64.whl
-/home/acs/DB/Convert/ATO_SCRIPTS/GOIassistant/package/PyQt5-5.12.2-5.12.3-cp35.cp36.cp37.cp38-abi3-manylinux1_x86_64.whl
+/home/acs/DB/Convert/ATO_SCRIPTS/GOIAssistant/package/PyQt5_sip-12.8.1-cp36-cp36m-manylinux1_x86_64.whl
+/home/acs/DB/Convert/ATO_SCRIPTS/GOIAssistant/package/PyQt5-5.12.2-5.12.3-cp35.cp36.cp37.cp38-abi3-manylinux1_x86_64.whl
 
-/home/acs/DB/Convert/ATO_SCRIPTS/GOIassistant/package/cx_Oracle-6.2.1.tar.gz
-/home/acs/DB/Convert/ATO_SCRIPTS/GOIassistant/package/goiassistant-1.1.1-py3-none-any.whl
+/home/acs/DB/Convert/ATO_SCRIPTS/GOIAssistant/package/cx_Oracle-6.2.1.tar.gz
+/home/acs/DB/Convert/ATO_SCRIPTS/GOIAssistant/package/goiassistant-1.1.1-py3-none-any.whl

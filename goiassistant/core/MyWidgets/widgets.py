@@ -55,7 +55,7 @@ class TypeWidget(QtWidgets.QRadioButton):
 class LineEditWidget(QtWidgets.QLineEdit):
     def __init__(self, parent=None):
         super(LineEditWidget, self).__init__(parent)
-        self.setMinimumSize(QtCore.QSize(300, 25))
+        self.setMinimumSize(QtCore.QSize(450, 25))
         self.setMaximumSize(QtCore.QSize(16777215, 16777215))
         self.setAlignment(QtCore.Qt.AlignCenter)
         self.setFont(QtGui.QFont("Arial", 12, 70))
@@ -81,39 +81,6 @@ class LineEditWidget(QtWidgets.QLineEdit):
              return
              
         self.setText(str(text))
-
-    # def keyPressEvent(self, event):
-        # if event.key() == QtCore.Qt.Key_Backspace:
-        #     self.del_()
-
-        # elif event.key() == QtCore.Qt.Key_Delete:
-        #     self.backspace()
-
-        # elif event.key() == QtCore.Qt.Key_Space:
-        #     super(LineEditWidget, self).keyPressEvent(event) 
-        #     self.setCursorPosition(0)
-
-        # elif (  '\u0600' <= event.text() <= '\u06FF' or
-        #         '\u0750' <= event.text() <= '\u077F' or
-        #         '\u08A0' <= event.text() <= '\u08FF' or
-        #         '\uFB50' <= event.text() <= '\uFDFF' or
-        #         '\uFE70' <= event.text() <= '\uFEFF' or
-        #         '\U00010E60' <= event.text() <= '\U00010E7F' or
-        #         '\U0001EE00' <= event.text() <= '\U0001EEFF'
-        #     ):
-        #     super(LineEditWidget, self).keyPressEvent(event) 
-        #     self.setCursorPosition(0)
-
-        # elif event.text().isalpha():
-        #     super(LineEditWidget, self).keyPressEvent(event) 
-        #     self.setCursorPosition(0)
-
-        # if event.text().isnumeric():
-        #     super(LineEditWidget, self).keyPressEvent(event) 
-            # self.setCursorPosition(0)
-
-        # else:
-        #     super(LineEditWidget, self).keyPressEvent(event) 
           
 class LogoWidget(QtWidgets.QLabel):
     isTimeOut = QtCore.pyqtSignal() 

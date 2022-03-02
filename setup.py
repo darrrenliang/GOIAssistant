@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="goiassistant",
-    version="1.1.1",
+    version="1.1.2",
     author="Darren Liang",
     author_email="darren.liang@acspower.com",
     install_requires=["cx-Oracle", "PyQt5"],
@@ -14,7 +14,6 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     packages=setuptools.find_packages(),
     package_data={
-        '': ['*.png', '*.txt']
     },
     classifiers=[
         "Programming Language :: Python :: 3",

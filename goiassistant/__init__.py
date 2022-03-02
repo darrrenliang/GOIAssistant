@@ -8,9 +8,6 @@
 """
 
 import os
-import logging
-import logging.handlers
-
 from goiassistant.core.OracleInterface   import OracleInterface
 from goiassistant.core.LinuxInterface    import LinuxInterface
 
