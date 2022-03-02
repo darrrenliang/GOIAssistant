@@ -19,9 +19,9 @@ PRISM   = LinuxInterface()
 
 # DB INFO
 def connect_database():
-    USER  = os.getenv('ORACLE_USER_BASEDB', 'acs_map_jepco72')
-    PSWD  = os.getenv('ORACLE_PW_BASEDB'  , 'acs')
-    TNS   = os.getenv('ORACLE_DBSTRING_BASEDB', 'dasmap')
+    USER  = os.getenv('ORACLE_USER_BASEDB', '')
+    PSWD  = os.getenv('ORACLE_PW_BASEDB'  , '')
+    TNS   = os.getenv('ORACLE_DBSTRING_BASEDB', '')
     Mapdb = OracleInterface(USER, PSWD, TNS)
     Mapdb.ConnectTest()
     return Mapdb
